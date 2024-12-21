@@ -9,6 +9,7 @@ genre_weights(dnb, [distorted-3, fast-3, studio-3, heavy-2, rhymes-1]).
 
 % Main predicate to start the program
 go :-
+    write('Heya! Welcome to genre suggester! Please answer the following questions and I will then guess what music genre you may like! '), nl,
     collect_user_preferences,
     calculate_and_display_scores,
     undo.
@@ -21,14 +22,15 @@ collect_user_preferences :-
 calculate_and_display_scores :-
     findall(Genre-Score, (genre_weights(Genre, Weights), calculate_score(Weights, Score)), Scores),
     sort(2, @>=, Scores, SortedScores),
-    display_scores(SortedScores).
+    group_and_display_scores(SortedScores).
 
 % Calculate score for a genre based on user preferences
-calculate_score([], 0).
-calculate_score([Feature-Weight | Rest], Score) :-
-    (user_likes(Feature) -> FeatureScore is Weight ; FeatureScore is 0),
-    calculate_score(Rest, RestScore),
-    Score is FeatureScore + RestScore.
+calculate_score(Weights, Score) :-
+    findall(FeatureScore, (
+        member(Feature-Weight, Weights),
+        (user_likes(Feature) -> FeatureScore is Weight ; FeatureScore is 0)
+    ), FeatureScores),
+    sum_list(FeatureScores, Score).
 
 % Ask user for each feature and store their preference
 ask_user_preference(Feature) :-
@@ -45,11 +47,36 @@ user_likes(Feature) :- yes(Feature).
 % Undo user preferences
 undo :- retractall(yes(_)), retractall(no(_)).
 
-% Display scores for all genres
-display_scores([]).
-display_scores([Genre-Score | Rest]) :-
+% Group and display scores
+group_and_display_scores(Scores) :-
+    group_by_score(Scores, MostLike, MaybeLike, LeastLike),
+    display_group('Based on your answers, you would like these genres the most: ', MostLike),
+    display_group('You may also like these genres: ', MaybeLike),
+    display_group('In terms of other genres, here is how they ranked: ', LeastLike).
+
+% Group scores by ranges
+group_by_score([], [], [], []).
+group_by_score([Genre-Score | Rest], [Genre-Score | MostLike], MaybeLike, LeastLike) :-
+    Score >= 8, !,
+    group_by_score(Rest, MostLike, MaybeLike, LeastLike).
+group_by_score([Genre-Score | Rest], MostLike, [Genre-Score | MaybeLike], LeastLike) :-
+    Score =< 7, Score > 5, !,
+    group_by_score(Rest, MostLike, MaybeLike, LeastLike).
+group_by_score([Genre-Score | Rest], MostLike, MaybeLike, [Genre-Score | LeastLike]) :-
+    Score =< 5,
+    group_by_score(Rest, MostLike, MaybeLike, LeastLike).
+
+% Display grouped genres and scores
+display_group(_, []) :- !.
+display_group(Message, Group) :-
+    write(Message), nl,
+    display_genres(Group).
+
+% Display genres and scores
+display_genres([]).
+display_genres([Genre-Score | Rest]) :-
     format('Genre: ~w, Score: ~d~n', [Genre, Score]),
-    display_scores(Rest).
+    display_genres(Rest).
 
 % List of features to be asked
 feature(distorted).
