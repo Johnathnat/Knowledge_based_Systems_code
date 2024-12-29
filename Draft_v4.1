@@ -9,7 +9,7 @@ genre_weights(dnb, [distorted-3, fast-3, studio-3, heavy-2, rhymes-1]).
 
 % Main predicate to start the program
 go :-
-    write('Heya! Welcome to genre suggester! Please answer the following questions and I will then guess what music genre you may like! '), nl,
+    write('Heya! Welcome to the music genre suggester! Please answer the following questions and I will then guess what music genre you may like! '), nl,
     collect_user_preferences,
     calculate_and_display_scores,
     undo.
@@ -57,10 +57,10 @@ group_and_display_scores(Scores) :-
 % Group scores by ranges
 group_by_score([], [], [], []).
 group_by_score([Genre-Score | Rest], [Genre-Score | MostLike], MaybeLike, LeastLike) :-
-    Score >= 8, !,
+    Score >= 10, !,
     group_by_score(Rest, MostLike, MaybeLike, LeastLike).
 group_by_score([Genre-Score | Rest], MostLike, [Genre-Score | MaybeLike], LeastLike) :-
-    Score =< 7, Score > 5, !,
+    Score =< 9, Score >= 6, !,
     group_by_score(Rest, MostLike, MaybeLike, LeastLike).
 group_by_score([Genre-Score | Rest], MostLike, MaybeLike, [Genre-Score | LeastLike]) :-
     Score =< 5,
@@ -78,13 +78,23 @@ display_genres([Genre-Score | Rest]) :-
     format('Genre: ~w, Score: ~d~n', [Genre, Score]),
     display_genres(Rest).
 
-% List of features to be asked
-feature(distorted).
-feature(fast).
-feature(slow).
-feature(band).
-feature(studio).
-feature(light).
-feature(heavy).
-feature(rhymes).
-feature(political).
+% List of genres and their songs
+genre_songs(metal, ['Gojira | Gift of Guilt', 'Black Sabbath | Children of the Grave', 'Rob Zombie | Living Dead Girl']).
+genre_songs(punk, ['Minor Threat | Minor Threat', 'Dog Park Dissidents | Queer as in Fuck You', 'Death | Politicians In My Eyes']).
+genre_songs(pop, ['Killers | Mr Brightside', 'Ed Sheeran | Shape of You', 'Taylor Swift | Shake It Off']).
+genre_songs(classical, ['Chopin | Noturne in E-flat Major', 'Mozart | Eine Kleine Nachtmusik', 'Beethoven | Symphony No. 5']).
+genre_songs(rap, ['Eminem | Like Toy Soldiers', 'DAMAG3 | LOBOTOMY', 'Gorrilaz | Feel Good Inc']).
+genre_songs(electro, ['Daft Punk | Get Lucky', 'MGMT, Justice | Electric Feel - Justice Remix', 'Deadmau5 | Strobe']).
+genre_songs(dnb, ['Pendulum | Tarantula', 'Turno, Skepsis, Charlotte Plank | Rave Out', 'Becky Hill, Chase & Status | Disconnect']).
+
+% Display songs for a genre
+suggestions(Genre) :-
+    genre_songs(Genre, Songs),
+    write('Since you like '), write(Genre), write(', here are some songs and bands you may enjoy: '), nl,
+    display_songs(Songs).
+
+% Display songs
+display_songs([]).
+display_songs([Song | Rest]) :-
+    write(Song), nl,
+    display_songs(Rest).
