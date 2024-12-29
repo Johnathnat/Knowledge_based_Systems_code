@@ -9,9 +9,12 @@ genre_weights(dnb, [distorted-3, fast-3, studio-3, heavy-2, rhymes-1]).
 
 % Main predicate to start the program
 go :-
-    write('Heya! Welcome to the music genre suggester! Please answer the following questions and I will then guess what music genre you may like! '), nl,
+    welcome_message,
+    help_message,
     collect_user_preferences,
     calculate_and_display_scores,
+    display_preferences,
+    goodbye_message,
     undo.
 
 % Collect user preferences for all features
@@ -98,3 +101,21 @@ display_songs([]).
 display_songs([Song | Rest]) :-
     write(Song), nl,
     display_songs(Rest).
+
+% Additional rules
+welcome_message :-
+    write('Welcome to the music genre suggester!'), nl.
+
+goodbye_message :-
+    write('Thank you for using the music genre suggester! Goodbye!'), nl.
+
+help_message :-
+    write('This program suggests music genres based on your preferences. Answer the questions with "yes" or "no".'), nl.
+
+display_preferences :-
+    findall(Feature, yes(Feature), Preferences),
+    write('Your preferences: '), write(Preferences), nl.
+
+reset_program :-
+    undo,
+    write('The program has been reset.'), nl.
