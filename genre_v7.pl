@@ -96,35 +96,35 @@ suggestions(Genre = punk, Score >= 10) :-
 	write(' Death | Politicians In My Eyes'), nl,
 	fail.
 
-suggestions(Genre = pop) :-
+suggestions(Genre = pop, Score >= 10) :-
 	write(' Since you like pop, here are some songs and bands you may enjoy: '), nl,
 	write(' Killers | Mr Brightside'), nl,
 	write(' Ed Sheeran | Shape of You'), nl,
 	write(' Taylor Swift | Shake It Off'), nl,
 	fail.
 	
-suggestions(Genre = classical) :-
+suggestions(Genre = classical, Score >= 10) :-
 	write(' Since you like classical, here are some songs and bands you may enjoy: '), nl,
 	write(' Chopin | Noturne in E-flat Major'), nl,
 	write(' Mozart | Eine Kleine Nachtmusik'), nl,
 	write(' Beethoven | Symphony No. 5'), nl,
 	fail.
 
-suggestions(Genre = rap) :-
+suggestions(Genre = rap, Score >= 10) :-
 	write(' Since you like rap, here are some songs and bands you may enjoy: '), nl,
 	write(' Eminem | Like Toy Soldiers'), nl,
 	write(' DAMAG3 | LOBOTOMY'), nl,
 	write(' Gorrilaz | Feel Good Inc'), nl,
 	fail.
 
-suggestions(Genre = electro) :-
+suggestions(Genre = electro, Score >= 10) :-
 	write(' Since you like electro, here are some songs and bands you may enjoy: '), nl,
 	write(' Daft Punk | Get Lucky'), nl,
 	write(' MGMT, Justice | Electric Feel - Justice Remix'), nl,
 	write(' Deadmau5 | Strobe'), nl,
 	fail.
 
-suggestions(Genre = dnb) :-
+suggestions(Genre = dnb, Score >= 10) :-
 	write(' Since you like dnb, here are some songs and bands you may enjoy: '), nl,
 	write(' Pendulum | Tarantula '), nl,
 	write(' Turno, Skepsis, Charlotte Plank | Rave Out'), nl,
