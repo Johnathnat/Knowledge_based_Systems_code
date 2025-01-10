@@ -55,7 +55,8 @@ group_and_display_scores(Scores) :-
     group_by_score(Scores, MostLike, MaybeLike, LeastLike),
     display_group('Based on your answers, you would like these genres the most: ', MostLike),
     display_group('You may also like these genres: ', MaybeLike),
-    display_group('In terms of other genres, here is how they ranked: ', LeastLike).
+    display_group('In terms of other genres, here is how they ranked: ', LeastLike),
+    display_suggestions(SortedScores).
 
 % Group scores by ranges
 group_by_score([], [], [], []).
@@ -101,6 +102,13 @@ display_songs([]).
 display_songs([Song | Rest]) :-
     write(Song), nl,
     display_songs(Rest).
+
+% Display suggestions based on scores
+display_suggestions([]).
+display_suggestions([Genre-Score | Rest]) :-
+    Score >= 10,
+    suggestions(Genre),
+    display_suggestions(Rest).
 
 % Additional rules
 welcome_message :-
