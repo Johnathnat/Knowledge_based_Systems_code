@@ -37,9 +37,12 @@ calculate_score(Weights, Score) :-
 
 % Ask user for each feature and store their preference
 ask_user_preference(Feature) :-
+    repeat,
     format('Do you like ~w (y/n)? ', [Feature]),
     read(Response),
-    (member(Response, [yes, y]) -> assert(yes(Feature)) ; assert(no(Feature))).
+    (member(Response, [yes, y, no, n]) -> true ; (write('Invalid input. Please enter y/n.'), nl, fail)),
+    (member(Response, [yes, y]) -> assert(yes(Feature)) ; assert(no(Feature))),
+    !.
 
 % Check if user likes a feature
 user_likes(Feature) :- yes(Feature).
@@ -56,7 +59,7 @@ group_and_display_scores(Scores) :-
     display_group('Based on your answers, you would like these genres the most: ', MostLike),
     display_group('You may also like these genres: ', MaybeLike),
     display_group('In terms of other genres, here is how they ranked: ', LeastLike),
-    display_suggestions(SortedScores).
+    display_suggestions(Scores).
 
 % Group scores by ranges
 group_by_score([], [], [], []).
@@ -109,6 +112,17 @@ display_suggestions([Genre-Score | Rest]) :-
     Score >= 10,
     suggestions(Genre),
     display_suggestions(Rest).
+
+% List of features to be asked
+feature(distorted).
+feature(fast).
+feature(slow).
+feature(band).
+feature(studio).
+feature(light).
+feature(heavy).
+feature(rhymes).
+feature(political).
 
 % Additional rules
 welcome_message :-
